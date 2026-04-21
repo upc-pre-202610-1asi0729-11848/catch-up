@@ -4,6 +4,7 @@ import {MatToolbar} from '@angular/material/toolbar';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {LanguageSwitcher} from '../language-switcher/language-switcher';
+import {Footer} from '../footer/footer';
 
 @Component({
   selector: 'app-layout',
@@ -14,7 +15,8 @@ import {LanguageSwitcher} from '../language-switcher/language-switcher';
     MatSidenavContent,
     MatIconButton,
     MatIcon,
-    LanguageSwitcher
+    LanguageSwitcher,
+    Footer
   ],
   templateUrl: './layout.html',
   styleUrl: './layout.css',
