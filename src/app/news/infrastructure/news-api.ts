@@ -10,14 +10,14 @@ import {Article} from '../domain/model/article.entity';
 import {TopHeadlinesResponse} from './top-headlines-response';
 import {ArticleAssembler} from './article-assembler';
 
-@Injectable({providedIn: 'root'})
 /**
- * Infrastructure gateway to the external news provider API.
+ * Infrastructure gateway to the external news provider.
  *
  * @remarks
- * The gateway returns domain entities by delegating resource mapping to
- * assembler classes.
+ * This service isolates HTTP concerns and translates provider resources into
+ * domain entities before handing them to the application layer.
  */
+@Injectable({providedIn: 'root'})
 export class NewsApi {
   private baseUrl = environment.newsProviderApiBaseUrl;
   private newsEndpoint = environment.newsProviderNewsEndpointPath;
@@ -27,7 +27,9 @@ export class NewsApi {
   private logoApi = inject(LogoDevApi);
 
   /**
-   * Fetches all available sources and maps them into domain entities.
+   * Fetches the catalog of available sources.
+   *
+   * @returns Observable that emits normalized source entities.
    */
   getSources(): Observable<Source[]> {
     return this.http.get<SourcesResponse>(`${this.baseUrl}${this.sourcesEndpoint}`, {
@@ -41,6 +43,7 @@ export class NewsApi {
    * Fetches top headlines for a specific source.
    *
    * @param sourceId - Provider source identifier used in the query parameter.
+   * @returns Observable that emits normalized articles for the source.
    */
   getArticlesBySourceId(sourceId: string): Observable<Article[]> {
     return this.http.get<TopHeadlinesResponse>(`${this.baseUrl}${this.newsEndpoint}`, {
