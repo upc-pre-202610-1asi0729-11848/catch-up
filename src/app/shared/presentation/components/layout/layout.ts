@@ -10,6 +10,13 @@ import {ArticleList} from '../../../../news/presentation/components/article-list
 import {Footer} from '../footer/footer';
 import {MatIconButton} from '@angular/material/button';
 
+/**
+ * Main shell component that orchestrates source navigation and article content.
+ *
+ * @remarks
+ * This container bridges user interactions in the presentation layer with the
+ * `NewsStore`, keeping feature state management out of leaf components.
+ */
 @Component({
   selector: 'app-layout',
   imports: [
@@ -27,9 +34,6 @@ import {MatIconButton} from '@angular/material/button';
   templateUrl: './layout.html',
   styleUrl: './layout.css'
 })
-/**
- * Main shell component that orchestrates source navigation and article content.
- */
 export class Layout implements AfterViewInit {
 
   /** Injected application store for the News bounded context. */
@@ -40,7 +44,7 @@ export class Layout implements AfterViewInit {
   protected readonly articles = this.store.currentSourceArticles;
 
 
-  /** Initializes source and article data when the layout is mounted. */
+  /** Initializes source and article data once the shell view is ready. */
   ngAfterViewInit(): void {
     this.store.loadSources();
   }
