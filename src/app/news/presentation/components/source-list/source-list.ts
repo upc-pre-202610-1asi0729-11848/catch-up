@@ -3,6 +3,13 @@ import {Source} from '../../../domain/model/source.entity';
 import {MatNavList} from '@angular/material/list';
 import {SourceItem} from '../source-item/source-item';
 
+/**
+ * Presentation component that renders the available news sources.
+ *
+ * @remarks
+ * It acts as a relay between user interaction in source items and the parent
+ * container that coordinates state changes through the application layer.
+ */
 @Component({
   selector: 'app-source-list',
   imports: [
@@ -12,9 +19,6 @@ import {SourceItem} from '../source-item/source-item';
   templateUrl: './source-list.html',
   styleUrl: './source-list.css'
 })
-/**
- * Presentation component that renders the list of available news sources.
- */
 export class SourceList {
   /** Input source collection supplied by the application state. */
   sources = input<Source[]>();
@@ -26,7 +30,7 @@ export class SourceList {
    *
    * @param source - Selected source.
    */
-  emitSourceSelectedEvent(source: Source) {
+  emitSourceSelectedEvent(source: Source): void {
     this.sourceSelected.emit(source);
   }
 }
