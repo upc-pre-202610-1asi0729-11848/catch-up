@@ -2,6 +2,13 @@ import {Component, input} from '@angular/core';
 import {Article} from '../../../domain/model/article.entity';
 import {ArticleItem} from '../article-item/article-item';
 
+/**
+ * Presentation component that renders the article collection for one source.
+ *
+ * @remarks
+ * This component is intentionally thin: it receives already prepared article
+ * entities and delegates the rendering of each entry to `ArticleItem`.
+ */
 @Component({
   selector: 'app-article-list',
   imports: [
@@ -10,10 +17,7 @@ import {ArticleItem} from '../article-item/article-item';
   templateUrl: './article-list.html',
   styleUrl: './article-list.css'
 })
-/**
- * Presentation component that renders a list of article cards.
- */
 export class ArticleList {
-  /** Input collection of articles to display. */
+  /** Input collection of articles belonging to the selected source. */
   articles = input.required<Array<Article>>();
 }
