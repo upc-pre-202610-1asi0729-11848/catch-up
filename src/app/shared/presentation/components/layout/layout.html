@@ -1,7 +1,7 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #drawer class="sidenav" fixedInViewport>
     <mat-toolbar>Sources</mat-toolbar>
-    <!-- Add Source List Here -->
+    <app-source-list (sourceSelected)="updateArticlesBySource($event);drawer.toggle();" [sources]="sources()"/>
   </mat-sidenav>
   <mat-sidenav-content>
     <mat-toolbar color="primary">
@@ -14,7 +14,7 @@
         <app-language-switcher></app-language-switcher>
       </span>
     </mat-toolbar>
-    <!-- Add Article List Here -->
+    <app-article-list [articles]="articles()"/>
     <app-footer></app-footer>
   </mat-sidenav-content>
 </mat-sidenav-container>
