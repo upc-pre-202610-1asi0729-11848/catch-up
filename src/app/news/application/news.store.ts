@@ -4,20 +4,21 @@ import {Article} from '../domain/model/article.entity';
 import {NewsApi} from '../infrastructure/news-api';
 import {LogoDevApi} from '../../shared/infrastructure/logo-dev-api';
 
-@Injectable({providedIn: 'root'})
 /**
- * Application service that coordinates read models for the News bounded context.
+ * Application service that coordinates source selection and article retrieval.
  *
  * @remarks
- * This store owns source and article state and exposes it through Angular signals
- * consumed by presentation components.
+ * This store owns the read model for the News bounded context. It exposes
+ * reactive projections for presentation components, caches articles by source,
+ * and ensures one source is selected by default once the catalog is loaded.
  */
+@Injectable({providedIn: 'root'})
 export class NewsStore {
 
 
   /** Internal signal containing all available sources. */
   private sourcesSignal = signal<Source[]>([]);
-  /** Internal signal indexed by source id with preloaded article lists. */
+  /** Internal signal indexed by source id with cached article lists. */
   private articlesSignal = signal<Record<string, Article[]>>({});
   private newsApi = inject(NewsApi);
   private logoApi = inject(LogoDevApi);
@@ -26,15 +27,19 @@ export class NewsStore {
   readonly sources = computed(() => this.sourcesSignal());
   /** Read-only projection of the article cache keyed by source id. */
   readonly articles = computed(() => this.articlesSignal());
-  /** Reactive list of articles for the currently selected source. */
-  public currentSourceArticles = computed(() => this.articlesSignal()[this.currentSource?.id] ?? []);
-  /** Currently selected source used as aggregate navigation focus. */
+  /** Reactive list of articles belonging to the current source selection. */
+  readonly currentSourceArticles = computed(() => this.articlesSignal()[this.currentSource?.id] ?? []);
+  /** Currently selected source used as the navigation focus for queries. */
   private _currentSource!: Source;
 
   /**
-   * Loads available sources once and initializes the current source selection.
+   * Loads the available sources once and initializes the default selection.
+   *
+   * @remarks
+   * After the first successful load, the first available source becomes the
+   * current source so the article view can be populated immediately.
    */
-  loadSources() {
+  loadSources(): void {
     if (this.sourcesSignal().length === 0) {
       this.newsApi.getSources().subscribe(sources => {
         sources.forEach(source => source.urlToLogo = this.logoApi.getUrlToLogo(source.url));
@@ -46,9 +51,13 @@ export class NewsStore {
   }
 
   /**
-   * Loads articles for the selected source when they are not already cached.
+   * Loads articles for the current source when they are not already cached.
+   *
+   * @remarks
+   * The store enriches articles with source website and logo information so the
+   * presentation layer does not need to repeat cross-resource lookup rules.
    */
-  loadArticlesForCurrentSource() {
+  loadArticlesForCurrentSource(): void {
     const current = this.articlesSignal() ?? {};
     const source = this._currentSource;
     if (!current[source.id]) {
@@ -62,13 +71,15 @@ export class NewsStore {
     }
   }
 
-  /** Gets the currently selected source. */
+  /** Gets the source currently selected by the user journey. */
   get currentSource(): Source {
     return this._currentSource;
   }
 
   /**
-   * Updates the current source and triggers article loading for that source.
+   * Updates the current source and keeps the article projection in sync.
+   *
+   * @param value - Source selected by the user.
    */
   set currentSource(value: Source) {
     this._currentSource = value;
