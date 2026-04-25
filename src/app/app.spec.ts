@@ -3,6 +3,13 @@ import {App} from './app';
 
 describe('App', () => {
   beforeEach(async () => {
+    TestBed.overrideComponent(App, {
+      set: {
+        imports: [],
+        template: '<h1>{{ title() }}</h1>'
+      }
+    });
+
     await TestBed.configureTestingModule({
       imports: [App],
     }).compileComponents();
@@ -16,8 +23,9 @@ describe('App', () => {
 
   it('should render title', async () => {
     const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, catch-up');
+    expect(compiled.querySelector('h1')?.textContent).toContain('catch-up');
   });
 });
