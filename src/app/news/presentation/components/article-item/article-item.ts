@@ -16,6 +16,13 @@ import {MatButton, MatIconButton} from '@angular/material/button';
 import {TranslatePipe} from '@ngx-translate/core';
 import {MatIcon} from '@angular/material/icon';
 
+/**
+ * Presentation component responsible for rendering and sharing one article.
+ *
+ * @remarks
+ * The component delegates state ownership to the application layer and only
+ * handles user interface concerns such as rendering and feedback messages.
+ */
 @Component({
   selector: 'app-article-item',
   imports: [
@@ -36,18 +43,19 @@ import {MatIcon} from '@angular/material/icon';
   templateUrl: './article-item.html',
   styleUrl: './article-item.css'
 })
-/**
- * Presentation component responsible for rendering and sharing one article.
- */
 export class ArticleItem {
   private snackBar = inject(MatSnackBar);
-  /** Input article view model from the application state. */
+  /** Input article supplied by the current application state projection. */
   article = input.required<Article>();
 
   /**
    * Shares the current article through the Web Share API or clipboard fallback.
+   *
+   * @remarks
+   * This behavior supports the article interaction story while keeping the
+   * sharing workflow encapsulated in the component that owns the action UI.
    */
-  async shareArticle() {
+  async shareArticle(): Promise<void> {
     const articleShareInfo = {
       title: this.article()?.title,
       url: this.article()?.url
