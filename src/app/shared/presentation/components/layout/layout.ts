@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, inject, OnInit} from '@angular/core';
+import {AfterViewInit, Component, inject} from '@angular/core';
 import {NewsStore} from '../../../../news/application/news.store';
 import {Source} from '../../../../news/domain/model/source.entity';
 import {MatSidenav, MatSidenavContainer, MatSidenavContent} from '@angular/material/sidenav';

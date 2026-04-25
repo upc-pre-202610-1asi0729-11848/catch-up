@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import {Component, signal} from '@angular/core';
 import {Layout} from './shared/presentation/components/layout/layout';
 
 @Component({
